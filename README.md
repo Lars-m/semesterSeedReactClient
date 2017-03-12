@@ -6,7 +6,7 @@ It has been changed to server as a demo frontend for a matching Java (JAX-RS) ba
 
 # Getting started
 
-* Clone, compile and run the matching JAX-RS server found [here](https://github.com/Lars-m/semesterSeedJAX-RS-Backend.git)
+* Clone, compile and run the matching JAX-RS Backend found [here](https://github.com/Lars-m/semesterSeedJAX-RS-Backend.git)
 * Clone *this* project and start it (with a local development server) via: ```npm start```
 * Now just follow the instructions on the Home-page
 
