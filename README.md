@@ -1,5 +1,9 @@
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
+It has been changed to server as a demo frontend for a matching Java (JAX-RS) backend and are meant ONLY for exercises at:
+
+[Computer Science at cphbusiness.dk](https://www.cphbusiness.dk/english/study-programmes/ap-degree/computer-science/)
+
 Below you will find some information on how to perform common tasks.<br>
 You can find the most recent version of this guide [here](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md).
 
