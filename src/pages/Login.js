@@ -40,7 +40,8 @@ const Login = observer(class Login extends Component {
           <label htmlFor="inputPassword" className="sr-only">Password</label>
           <input type="password" ref="pass" className="form-control" placeholder="Password" required />
           <button className="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-          {auth.failedLogin && (<p>{auth.errorMessage}</p> )}
+          <br/>
+          {auth.failedLogin && (<p style={{color: "darkred"}}>{auth.errorMessage}</p> )}
         </form>
       </div>
     )

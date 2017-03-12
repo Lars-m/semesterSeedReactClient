@@ -27,13 +27,18 @@ class AdminDataHandler {
       })
       .then((res) => {
         if (errorCode !== 200) {
-          this.errorMessage = `${res.error.message} (${res.error.code})`;
+          throw new Error(`${res.error.message} (${res.error.code})`);
         }
         else {
           this.messageFromServer = res.message;
         }
+      }).catch(err => {
+        //This is the only way (I have found) to veryfy server is not running
+        this.errorMessage = fetchHelper.addJustErrorMessage(err);
+        
       })
-  }
+  
+}
 }
 let adminDataHandler = new AdminDataHandler(URL);
 

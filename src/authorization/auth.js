@@ -1,8 +1,8 @@
 import { extendObservable, computed } from "mobx";
 
 const jwtDecode = require("jwt-decode");
-
 const URL = require("../../package.json").serverURL;
+import fetchHelper from "../datahandlers/fetchHelpers"
 
 class AuthenticationHandler {
 
@@ -18,18 +18,14 @@ class AuthenticationHandler {
         return this.token !== null;
       })
     })
-    this.login = this.login.bind(this);
-    this.setToken = this.setToken.bind(this);
-    this.setFailedLogin = this.setFailedLogin.bind(this);
-    this.initDataFromToken = this.initDataFromToken.bind(this);
   }
 
-  setToken(value) {
+  setToken = (value) => {
     localStorage.token = value;
     this.initDataFromToken();
   }
 
-  initDataFromToken() {
+  initDataFromToken = () => {
     console.log("Initializing Data From Token");
     if (!localStorage.token) {
       return;
@@ -49,12 +45,12 @@ class AuthenticationHandler {
     }, this);
   }
 
-  setFailedLogin(value, msg) {
+  setFailedLogin = (value, msg) => {
     this.failedLogin = value;
     this.errorMessage = msg;
   }
 
-  logout(cb) {
+  logout = () => {
     console.log("Logout");
     delete localStorage.token;
     this.token = null;
@@ -63,12 +59,10 @@ class AuthenticationHandler {
     this.isAdmin = false;
     this.isUser = false;
     this.errorMessage = "";
-   /* if (cb) cb()
-    this.onChange(false)*/
   }
 
-  login(username, password, cb) {
-    var self = this;
+  login = (username, password, cb) => {
+    var self = this; //Required because of exception handling below, which looses this
     this.setFailedLogin(false, "");
     console.log("Login: " + self.token)
     cb = arguments[arguments.length - 1]
@@ -87,22 +81,24 @@ class AuthenticationHandler {
         'Content-Type': 'application/json'
       })
     }
-    fetch(URL + "api/login", options).then(function (res) {
+    fetch(URL + "api/login", options).then(res => {
       if (res.status === 400) {
         throw new Error("No Response from Server");
       }
       if (res.status === 401 || res.status === 403) {
         throw new Error("Sorry, you could not be authenticed");
       }
-      if (res.status > 210 || !res.ok) {
-        throw new Error("Unknow error while trying to login");
+      if (res.status > 200 || !res.ok) {
+        throw new Error("Unknow error while trying to login").b;
       }
-      res.json().then(function (data) {
-        self.setToken(data.token);
+      res.json().then(data => {
+        this.setToken(data.token);
       });
-    }).catch(function (err) {
-      self.setFailedLogin(true, err.message);
+    }).catch(err => {
       console.log(err.message);
+      //Self because we use this with exceptions
+      self.setFailedLogin(true, fetchHelper.addJustErrorMessage( err));
+      
     })
     return;
   }
@@ -113,7 +109,9 @@ class AuthenticationHandler {
 var auth = new AuthenticationHandler();
 //Call init, if a new Instance was created due to a refresh (F5 or similar)
 auth.initDataFromToken();
-window.auth = auth;
+
+//Comment out for debugging
+//window.auth = auth;
 
 export default auth;
 

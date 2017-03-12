@@ -20,5 +20,12 @@ export default {
       options.body = JSON.stringify(data);
     }
     return options;
+  },
+  /**
+   * Provide a better error message, that the one supplied by fetch
+   * @param {*} err 
+   */
+  addJustErrorMessage(err){
+    return  (err.message) === "Failed to fetch" ? `${err.message} (is the server running?)`: err.message;
   }
 }
