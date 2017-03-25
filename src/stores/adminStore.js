@@ -1,37 +1,29 @@
 
-import { extendObservable,action } from "mobx";
+import { observable, action } from "mobx";
 import fetchHelper from "./fetchHelpers"
 const URL = require("../../package.json").serverURL;
 
 /* encapsulates Data related to Admins */
 class AdminStore {
+  @observable messageFromServer = "";
+  @observable errorMessage = "";
 
-  constructor(url) {
-    this.url = url;
-    extendObservable(this, {
-      messageFromServer: "",
-      errorMessage: "",
-      getData : action(this.getData),
-      setErrorMessage : action(this.setErrorMessage),
-      setMessageFromServer : action(this.setMessageFromServer)
-    });
-  }
-
-  setErrorMessage(err){
+  @action
+  setErrorMessage(err) {
     this.errorMessage = err;
   }
-
-  setMessageFromServer(msg){
+  @action
+  setMessageFromServer(msg) {
     this.messageFromServer = msg;
   }
 
-
+  @action
   getData = () => {
     this.errorMessage = "";
     this.messageFromServer = "";
     let errorCode = 200;
     const options = fetchHelper.makeOptions("GET", true);
-    fetch(this.url + "api/demoadmin", options)
+    fetch(URL + "api/demoadmin", options)
       .then((res) => {
         if (res.status > 200 || !res.ok) {
           errorCode = res.status;
@@ -48,13 +40,11 @@ class AdminStore {
       }).catch(err => {
         //This is the only way (I have found) to veryfy server is not running
         this.setErrorMessage(fetchHelper.addJustErrorMessage(err));
-        
       })
-  
+  }
 }
-}
-let admStore = new AdminStore(URL);
+let adminStore = new AdminStore(URL);
 
 //Only for debugging
 //window.adminStore = adminStore;
-export default admStore;
+export default adminStore;

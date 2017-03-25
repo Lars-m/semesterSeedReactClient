@@ -1,4 +1,4 @@
-import { extendObservable, computed,action } from "mobx";
+import { observable, computed, action } from "mobx";
 
 const jwtDecode = require("jwt-decode");
 const URL = require("../../package.json").serverURL;
@@ -6,30 +6,25 @@ import fetchHelper from "../stores/fetchHelpers"
 
 class AuthenticationHandler {
 
-  constructor() {
-    extendObservable(this, {
-      token: null,  //Keps users logged in, even after a refresh of the page
-      failedLogin: false,
-      userName: "",
-      isAdmin: false,
-      errorMessage: "",
-      isUser: false,
-      loggedIn: computed(function () {
-        return this.token !== null;
-      }),
-      setFailedLogin : action(this.setFailedLogin),
-      setToken : action(this.setToken),
-      initDataFromToken : action(this.initDataFromToken),
-      setFailedLogin : action(this.setFailedLogin),
-      logout: action(this.logout)
-    })
+  @observable token = null;  //Keps users logged in, even after a refresh of the page
+  @observable failedLogin = false;
+  @observable userName = "";
+  @observable isAdmin = false;
+  @observable errorMessage = "";
+  @observable isUser = false;
+
+  @computed
+  get loggedIn(){
+    return this.token !== null;
   }
 
+  @action
   setToken = (value) => {
     localStorage.token = value;
     this.initDataFromToken();
   }
 
+  @action
   initDataFromToken = () => {
     console.log("Initializing Data From Token");
     if (!localStorage.token) {
@@ -50,11 +45,13 @@ class AuthenticationHandler {
     }, this);
   }
 
+  @action
   setFailedLogin = (value, msg) => {
     this.failedLogin = value;
     this.errorMessage = msg;
   }
 
+  @action
   logout = () => {
     console.log("Logout");
     delete localStorage.token;
@@ -65,7 +62,7 @@ class AuthenticationHandler {
     this.isUser = false;
     this.errorMessage = "";
   }
-
+   @action
   login = (username, password, cb) => {
     var self = this; //Required because of exception handling below, which looses this
     this.setFailedLogin(false, "");
@@ -102,12 +99,11 @@ class AuthenticationHandler {
     }).catch(err => {
       console.log(err.message);
       //Self because we use this with exceptions
-      self.setFailedLogin(true, fetchHelper.addJustErrorMessage( err));
-      
+      self.setFailedLogin(true, fetchHelper.addJustErrorMessage(err));
+
     })
     return;
   }
-  
 }
 
 var auth = new AuthenticationHandler();

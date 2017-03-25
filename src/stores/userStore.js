@@ -1,33 +1,25 @@
 
-import { extendObservable,action } from "mobx";
+import { observable, action } from "mobx";
 import fetchHelper from "./fetchHelpers"
 const URL = require("../../package.json").serverURL;
 
 
 class UserStore {
+  @observable messageFromServer = "";
+  @observable errorMessage = "";
 
-  constructor(url) {
-    console.log("Constructed");
-    this.url = url;
-    extendObservable(this, {
-      messageFromServer: "",
-      errorMessage: "",
-      getData : action(this.getData),
-      setErrorMessage : action(this.setErrorMessage)
-    });
-  }
-
-  setErrorMessage(err){
+  @action
+  setErrorMessage = (err) => {
     this.errorMessage = err;
   }
 
-
-  getData = () =>{
+  @action
+  getData = () => {
     this.errorMessage = "";
     this.messageFromServer = "";
     let errorCode = 200;
     const options = fetchHelper.makeOptions("GET", true);
-    fetch(this.url + "api/demouser", options)
+    fetch(URL + "api/demouser", options)
       .then((res) => {
         if (res.status > 210 || !res.ok) {
           errorCode = res.status;
@@ -42,14 +34,14 @@ class UserStore {
           this.messageFromServer = res.message;
         }
       })).catch(err => {
-        //This is the only way (I have found) to veryfy server is not running
+        //This is the only way (I have found) to verify server is not running
         this.setErrorMessage(fetchHelper.addJustErrorMessage(err));
       })
   }
 }
 
-let uStore = new UserStore(URL);
+let userStore = new UserStore();
 
 //Only for debugging
-//window.userStore = uStore;
-export default uStore;
+//window.userStore = userStore;
+export default userStore;
