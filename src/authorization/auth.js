@@ -1,8 +1,8 @@
-import { extendObservable, computed } from "mobx";
+import { extendObservable, computed,action } from "mobx";
 
 const jwtDecode = require("jwt-decode");
 const URL = require("../../package.json").serverURL;
-import fetchHelper from "../datahandlers/fetchHelpers"
+import fetchHelper from "../stores/fetchHelpers"
 
 class AuthenticationHandler {
 
@@ -16,7 +16,12 @@ class AuthenticationHandler {
       isUser: false,
       loggedIn: computed(function () {
         return this.token !== null;
-      })
+      }),
+      setFailedLogin : action(this.setFailedLogin),
+      setToken : action(this.setToken),
+      initDataFromToken : action(this.initDataFromToken),
+      setFailedLogin : action(this.setFailedLogin),
+      logout: action(this.logout)
     })
   }
 
@@ -105,8 +110,8 @@ class AuthenticationHandler {
   
 }
 
-
 var auth = new AuthenticationHandler();
+
 //Call init, if a new Instance was created due to a refresh (F5 or similar)
 auth.initDataFromToken();
 

@@ -3,6 +3,8 @@ import { Link } from "react-router";
 import auth from '../authorization/auth'
 import { observer } from "mobx-react";
 
+import {useStrict} from "..//stores/useStrict"
+
 const App = observer(class App extends Component {
 
   render() {

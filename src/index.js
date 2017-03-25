@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './styles/index.css';
 import { hashHistory, Router, Route, IndexRoute } from 'react-router'
 import App from './pages/App';
 import Home from './pages/Home';
@@ -21,7 +21,6 @@ function requireAuth(nextState, replace) {
     })
   }
 }
-
 
 ReactDOM.render((
   <Router history={hashHistory}>

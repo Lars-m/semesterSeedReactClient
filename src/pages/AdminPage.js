@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {observer} from "mobx-react";
-import userData from "../datahandlers/adminDataHandler";
+import userData from "../stores/adminStore";
 
 const AdminPage = observer(
   class AdminPage extends Component {
@@ -16,7 +16,7 @@ const AdminPage = observer(
     render() {
       return (
         <div>
-          <h2>Users</h2>
+          <h2>Admins</h2>
           <p>This message is fetched from the server if you were properly logged in</p>
           <div className="msgFromServer">
           {userData.messageFromServer}

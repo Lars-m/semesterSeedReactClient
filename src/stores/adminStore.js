@@ -1,28 +1,39 @@
 
-import { extendObservable } from "mobx";
+import { extendObservable,action } from "mobx";
 import fetchHelper from "./fetchHelpers"
-
 const URL = require("../../package.json").serverURL;
 
-class UserDataHandler {
+/* encapsulates Data related to Admins */
+class AdminStore {
 
   constructor(url) {
-    console.log("Constructed");
     this.url = url;
     extendObservable(this, {
       messageFromServer: "",
-      errorMessage: ""
+      errorMessage: "",
+      getData : action(this.getData),
+      setErrorMessage : action(this.setErrorMessage),
+      setMessageFromServer : action(this.setMessageFromServer)
     });
   }
+
+  setErrorMessage(err){
+    this.errorMessage = err;
+  }
+
+  setMessageFromServer(msg){
+    this.messageFromServer = msg;
+  }
+
 
   getData = () => {
     this.errorMessage = "";
     this.messageFromServer = "";
     let errorCode = 200;
     const options = fetchHelper.makeOptions("GET", true);
-    fetch(this.url + "api/demouser", options)
+    fetch(this.url + "api/demoadmin", options)
       .then((res) => {
-        if (res.status > 210 || !res.ok) {
+        if (res.status > 200 || !res.ok) {
           errorCode = res.status;
         }
         return res.json();
@@ -32,16 +43,18 @@ class UserDataHandler {
           throw new Error(`${res.error.message} (${res.error.code})`);
         }
         else {
-          this.messageFromServer = res.message;
+          this.setMessageFromServer(res.message);
         }
       }).catch(err => {
         //This is the only way (I have found) to veryfy server is not running
-        this.errorMessage = fetchHelper.addJustErrorMessage(err);
+        this.setErrorMessage(fetchHelper.addJustErrorMessage(err));
+        
       })
-  }
+  
 }
-let userDataHandler = new UserDataHandler(URL);
+}
+let admStore = new AdminStore(URL);
 
 //Only for debugging
-window.userDataHandler = userDataHandler;
-export default userDataHandler;
+//window.adminStore = adminStore;
+export default admStore;
