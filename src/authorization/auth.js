@@ -20,17 +20,17 @@ class AuthenticationHandler {
 
   @action
   setToken = (value) => {
-    localStorage.token = value;
+    sessionStorage.token = value;
     this.initDataFromToken();
   }
 
   @action
   initDataFromToken = () => {
     console.log("Initializing Data From Token");
-    if (!localStorage.token) {
+    if (!sessionStorage.token) {
       return;
     }
-    this.token = localStorage.token;
+    this.token = sessionStorage.token;
     var decoded = jwtDecode(this.token);
     this.userName = decoded.username;
     this.isAdmin = false;
@@ -54,7 +54,7 @@ class AuthenticationHandler {
   @action
   logout = () => {
     console.log("Logout");
-    delete localStorage.token;
+    delete sessionStorage.token;
     this.token = null;
     this.userName = "";
     this.username = "";
