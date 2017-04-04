@@ -10,7 +10,7 @@ export default {
       "Content-type": "Application/json"
     };
     if (authenticate) {
-      headers.Authorization = `Bearer ${localStorage.token}`;
+      headers.Authorization = `Bearer ${sessionStorage.token}`;
     }
     let options = {
       method,
